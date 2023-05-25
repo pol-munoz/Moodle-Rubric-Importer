@@ -1,0 +1,84 @@
+.btn-plugin {
+    display: inline-block;
+    font-weight: 400;
+    color: #1d2125;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: .9375rem;
+    line-height: 1.5;
+    border-radius: 0;
+    transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out
+}
+
+@media (max-width: 1200px) {
+    .btn-plugin {
+        font-size:calc(0.90375rem + 0.045vw)
+    }
+}
+
+@media (prefers-reduced-motion:reduce) {
+    .btn-plugin {
+        transition: none
+    }
+}
+
+.btn-plugin:hover {
+    color: #1d2125;
+    text-decoration: none
+}
+
+.btn-plugin:focus,.btn-plugin.focus {
+    outline: 0;
+    box-shadow: 0 0 0 .2rem rgba(106,173,228,.75)
+}
+
+.btn-plugin.disabled,.btn-plugin:disabled {
+    opacity: .65
+}
+
+.btn-plugin:not(:disabled):not(.disabled) {
+    cursor: pointer
+}
+
+a.btn-plugin.disabled,fieldset:disabled a.btn-plugin {
+    pointer-events: none
+}
+
+.btn-plugin-excel {
+    color: #fff;
+    background-color: #21a366;
+    border-color: #21a366;
+}
+
+.btn-plugin-excel:hover {
+    color: #fff;
+    background-color: #33c481;
+    border-color: #2db074;
+}
+
+.btn-plugin-excel:focus,.btn-plugin-excel.focus {
+    color: #fff;
+    background-color: #33c481;
+    border-color: #2db074;
+    box-shadow: 0 0 0 .2rem rgba(83,142,81,.5)
+}
+
+.btn-plugin-excel.disabled,.btn-plugin-excel:disabled {
+    color: #fff;
+    background-color: #21a366;
+    border-color: #21a366
+}
+
+.btn-plugin-excel:not(:disabled):not(.disabled):active,.btn-plugin-excel:not(:disabled):not(.disabled).active,.show>.btn-plugin-excel.dropdown-toggle {
+    color: #fff;
+    background-color: #33c481;
+    border-color: #2db074;
+}
+
+.btn-plugin-excel:not(:disabled):not(.disabled):active:focus,.btn-plugin-excel:not(:disabled):not(.disabled).active:focus,.show>.btn-plugin-excel.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(83,142,81,.5)
+}
