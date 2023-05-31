@@ -9,4 +9,6 @@ A number of rows at the beginning can be offset (skipped) to account for rubric 
 
 An example of the expected rubric format can be seen in the screenshots.
 
-Note that the extension simulates the process of defining a rubric by programatically clicking the buttons, and has only been tested on a specific deployment of Moodle. If you encounter any issue please contact the developer.
+Note that the extension simulates the process of defining a rubric by programatically clicking the buttons, and has only been tested on a specific deployment of Moodle. It may take a couple of seconds to process a rubric, especially with larger files.
+
+If you encounter any issue please contact the developer.
