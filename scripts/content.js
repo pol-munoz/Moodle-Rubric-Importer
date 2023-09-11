@@ -1,4 +1,5 @@
 const table = document.getElementById('rubric-criteria')
+const tbody = table.lastElementChild
 const addCriterionButton = document.getElementById('rubric-criteria-addcriterion')
 const rubric = document.getElementById('fitem_id_rubric')
 
@@ -49,22 +50,18 @@ function delay(timeout) {
 }
 
 function confirm() {
-	const confirm = document.getElementsByClassName('moodle-dialogue-confirm')[0]
-	const yes = confirm.getElementsByTagName('input')[0]
+	const dialogue = document.getElementsByClassName('moodle-dialogue-confirm')[0]
+	const yes = dialogue.getElementsByTagName('input')[0]
 	yes.click()
 }
 
 function clearForm() {
-	const tbody = table.firstElementChild
-
-
 	let count = tbody.children.length
 	for (let i = 0; i < count; i++) {
 		const tr = tbody.firstElementChild
 		const controls = tr.firstElementChild
 		const del = controls.children[1].firstElementChild
 		del.click()
-
 		confirm()
 	}
 }
@@ -72,15 +69,15 @@ function clearForm() {
 function newCriterion(criterion) {
 	addCriterionButton.click()
 
-	const tr = table.firstElementChild.lastElementChild
+	const tr = tbody.lastElementChild
 
 	// Resets levels
 	const levels = tr.getElementsByTagName('table')[0]
-	const tbody = levels.firstElementChild
+	const tbodyLevels = levels.firstElementChild
 
-	const count = tbody.firstElementChild.children.length
+	const count = tbodyLevels.firstElementChild.children.length
 	for (let i = 0; i < count; i++) {
-		const level = tbody.firstElementChild.lastElementChild
+		const level = tbodyLevels.firstElementChild.lastElementChild
 		const del = level.firstElementChild.lastElementChild.firstElementChild
 		del.click()
 		confirm()
@@ -94,13 +91,13 @@ function newCriterion(criterion) {
 }
 
 function addLevelToLastCriterion(description, grade) {
-	const tr = table.firstElementChild.lastElementChild
+	const tr = tbody.lastElementChild
 	const addLevelButton = tr.getElementsByClassName('addlevel')[0].firstElementChild
 	addLevelButton.click()
 
 	const levels = tr.getElementsByTagName('table')[0]
-	const tbody = levels.firstElementChild
-	const level = tbody.firstElementChild.lastElementChild
+	const tbodyLevels = levels.firstElementChild
+	const level = tbodyLevels.firstElementChild.lastElementChild
 	
 	const levelTextarea = level.getElementsByClassName('definition')[0].firstElementChild
 	levelTextarea.value = description
@@ -142,9 +139,14 @@ function processExcel(data, offset) {
 async function onImportClick(e) {
 	e.preventDefault()
 
-	const offset = parseInt(prompt("Row offset", "1"), 10)
+	const input = prompt("Row offset", "1")
+	if (input == null) {
+		return
+	}
 
-	if (offset == NaN || offset < 0) {
+	const offset = parseInt(input, 10)
+
+	if (isNaN(offset) || offset < 0) {
 		alert("Error: The row offset must be a positive integer")
 		return
 	}
