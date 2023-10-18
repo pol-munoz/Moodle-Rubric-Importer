@@ -43,18 +43,6 @@ function getNextKey(key) {
   return key
 }
 
-function delay(timeout) {
-	return new Promise(resolve => window.setTimeout(() => {
-		resolve()
-	}, timeout))
-}
-
-function confirm() {
-	const dialogue = document.getElementsByClassName('moodle-dialogue-confirm')[0]
-	const yes = dialogue.getElementsByTagName('input')[0]
-	yes.click()
-}
-
 function clearForm() {
 	let count = tbody.children.length
 	for (let i = 0; i < count; i++) {
@@ -62,47 +50,40 @@ function clearForm() {
 		const controls = tr.firstElementChild
 		const del = controls.children[1].firstElementChild
 		del.click()
-		confirm()
 	}
 }
 
-function newCriterion(criterion) {
+function newCriterion() {
 	addCriterionButton.click()
+}
 
-	const tr = tbody.lastElementChild
-
-	// Resets levels
-	const levels = tr.getElementsByTagName('table')[0]
-	const tbodyLevels = levels.firstElementChild
-
-	const count = tbodyLevels.firstElementChild.children.length
-	for (let i = 0; i < count; i++) {
-		const level = tbodyLevels.firstElementChild.lastElementChild
-		const del = level.firstElementChild.lastElementChild.firstElementChild
-		del.click()
-		confirm()
-	}
-
+function modifyCriterion(criterion, name) {
 	// Sets criterion name
+	const tr = tbody.children[criterion]
 	const textarea = tr.getElementsByClassName('description')[0].firstElementChild
 	textarea.parentElement.click()
-	textarea.value = criterion
+	textarea.value = name
 	textarea.blur()
 }
 
-function addLevelToLastCriterion(description, grade) {
-	const tr = tbody.lastElementChild
+function newLevelInCriterion(criterion) {
+	const tr = tbody.children[criterion]
 	const addLevelButton = tr.getElementsByClassName('addlevel')[0].firstElementChild
 	addLevelButton.click()
+}
 
+function modifyLevelInCriterion(criterion, level, description, grade) {
+	const tr = tbody.children[criterion]
 	const levels = tr.getElementsByTagName('table')[0]
 	const tbodyLevels = levels.firstElementChild
-	const level = tbodyLevels.firstElementChild.lastElementChild
+	const levelChild = tbodyLevels.firstElementChild.children[level]
+
+	levelChild.click()
 	
-	const levelTextarea = level.getElementsByClassName('definition')[0].firstElementChild
+	const levelTextarea = levelChild.getElementsByClassName('definition')[0].firstElementChild
 	levelTextarea.value = description
 	
-	const gradeInput = level.getElementsByClassName('score')[0].firstElementChild.firstElementChild
+	const gradeInput = levelChild.getElementsByClassName('score')[0].firstElementChild.firstElementChild
 	gradeInput.value = grade
 	gradeInput.blur()
 }
@@ -112,27 +93,45 @@ function processExcel(data, offset) {
 	const workbook = XLSX.read(data, opts)
 	const sheet = workbook.Sheets[workbook.SheetNames[0]]
 
+	const defaultCriteria = 1
+	let defaultLevels = 3
+	// Excel indexes
 	let row = 1 + offset
 	let criterionCell = 'A' + row
+	// Moodle indexes
+	let criterion = 0
 
 	do {
+		// Excel indexes
 		let levelColumn = 'B'
 		let levelCell = levelColumn + row
 		let gradeCell = levelColumn + (row + 1)
+		// Moodle indexes
+		let level = 0
 
-		newCriterion(sheet[criterionCell].v)
+		if (criterion >= defaultCriteria) {
+			newCriterion()
+		}
+		modifyCriterion(criterion, sheet[criterionCell].v)
 
 		do {
-			addLevelToLastCriterion(sheet[levelCell].v, sheet[gradeCell].v)
+			if (level >= defaultLevels) {
+				newLevelInCriterion(criterion)
+			}
+			modifyLevelInCriterion(criterion, level, sheet[levelCell].v, sheet[gradeCell].v)
 
 			levelColumn = getNextKey(levelColumn)
 
 			levelCell = levelColumn + row
 			gradeCell = levelColumn + (row + 1)
+			level++
 		} while (sheet[levelCell])
 
 		row += 2
 		criterionCell = 'A' + row
+		criterion++
+		// Moodle by default will create new criterions with as many levels as the previous
+		defaultLevels = level
 	} while (sheet[criterionCell])
 }
 
@@ -155,7 +154,6 @@ async function onImportClick(e) {
 
 	const reader = new FileReader()
 	reader.addEventListener('load', (event) => {
-		clearForm()
 		processExcel(event.target.result, offset)
 	})
 	reader.readAsBinaryString(file)
